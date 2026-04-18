@@ -1,0 +1,30 @@
+# Caddy reverse proxy for the reviewer service.
+# Copy to /etc/caddy/Caddyfile on your VPS and edit the domain.
+# Caddy handles TLS automatically via Let's Encrypt.
+
+developers.agnxxt.com {
+    # GitHub webhook endpoint + public API + SSE streams
+    reverse_proxy 127.0.0.1:8080 {
+        # SSE needs long-lived connections; disable buffering
+        flush_interval -1
+        # GitHub webhooks post bodies up to ~25MB for large PRs
+        transport http {
+            read_timeout 120s
+        }
+    }
+
+    # Optional: block public access to admin-ish endpoints if this host is
+    # internet-exposed. Uncomment to lock down /sessions and /usage to your
+    # office IPs (replace with your CIDRs).
+    # @admin {
+    #     path /sessions* /usage*
+    #     not remote_ip 203.0.113.0/24 198.51.100.42
+    # }
+    # respond @admin 403
+
+    # Log webhook deliveries for debugging GitHub setup
+    log {
+        output file /var/log/caddy/review.log
+        format json
+    }
+}

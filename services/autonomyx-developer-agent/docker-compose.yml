@@ -1,0 +1,39 @@
+services:
+  reviewer:
+    build: .
+    container_name: autonomyx-developer-agent
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      WORKSPACES_DIR: /workspaces
+      DATABASE_PATH: /data/review_sessions.db
+    ports:
+      - "${PORT:-8080}:8080"
+    volumes:
+      - reviewer-data:/data
+      - reviewer-workspaces:/workspaces
+      # Mount GitHub App private key read-only if using GitHub integration
+      - ${GITHUB_APP_PRIVATE_KEY_PATH:-/dev/null}:/app/github-app.private-key.pem:ro
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/health')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  slack-bot:
+    build: .
+    container_name: autonomyx-developer-agent-slack-bot
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      HOST: reviewer
+      PORT: "8080"
+    command: ["python", "-m", "integrations.slack_bot"]
+    depends_on:
+      reviewer:
+        condition: service_healthy
+    # No ports — Socket Mode is outbound-only
+
+volumes:
+  reviewer-data:
+  reviewer-workspaces:

@@ -1,0 +1,45 @@
+{
+  "name": "autonomyx-developer-agent",
+  "displayName": "Autonomyx Developer Agent",
+  "description": "Delegate coding tasks to workers and get Claude reviews inline.",
+  "version": "0.1.0",
+  "publisher": "autonomyx",
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": ["Other"],
+  "activationEvents": [],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "autonomyxDev.review",
+        "title": "Autonomyx: Delegate & Review"
+      },
+      {
+        "command": "autonomyxDev.openSession",
+        "title": "Autonomyx: Open Session By ID"
+      }
+    ],
+    "configuration": {
+      "title": "Autonomyx Developer Agent",
+      "properties": {
+        "autonomyxDev.serverUrl": {
+          "type": "string",
+          "default": "http://127.0.0.1:8080",
+          "description": "Base URL of the autonomyx-developer-agent FastAPI server."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p .",
+    "watch": "tsc -w -p .",
+    "vscode:prepublish": "npm run compile"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/vscode": "^1.90.0",
+    "typescript": "^5.4.0"
+  }
+}

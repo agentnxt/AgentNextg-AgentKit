@@ -1,0 +1,14 @@
+.env
+__pycache__/
+*.pyc
+.venv/
+venv/
+workspaces/
+*.log
+*.db
+*.db-journal
+*.pem
+.DS_Store
+integrations/vscode-extension/node_modules/
+integrations/vscode-extension/out/
+integrations/vscode-extension/*.vsix
