@@ -150,10 +150,10 @@ async def transform_image(image_url: str, operations: str = "") -> dict:
     return {"url": transform_url, "tool": "imagor"}
 
 
-from image_agent.tools_design import DESIGN_TOOL_MAP
-from image_agent.tools_sources import SOURCE_TOOL_MAP
-from image_agent.tools_publish import PUBLISH_TOOL_MAP
-from image_agent.tools_content import CONTENT_TOOL_MAP
+from teams.imageteam.tools_design import DESIGN_TOOL_MAP
+from teams.imageteam.tools_sources import SOURCE_TOOL_MAP
+from teams.imageteam.tools_publish import PUBLISH_TOOL_MAP
+from teams.imageteam.tools_content import CONTENT_TOOL_MAP
 
 TOOL_MAP = {
     "generate_sdxl": generate_sdxl,

@@ -24,37 +24,37 @@ def create_app() -> FastAPI:
 
     @app.post("/generate")
     async def generate(req: GenerateRequest):
-        from image_agent.agent import ImageAgent
+        from teams.imageteam.agent import ImageAgent
         agent = ImageAgent()
         return await agent.generate(req.prompt, req.model, req.width, req.height)
 
     @app.post("/edit")
     async def edit(req: EditRequest):
-        from image_agent.agent import ImageAgent
+        from teams.imageteam.agent import ImageAgent
         agent = ImageAgent()
         return await agent.edit(req.image, req.prompt)
 
     @app.post("/upscale")
     async def upscale(image: str = Form(...), scale: int = Form(2)):
-        from image_agent.agent import ImageAgent
+        from teams.imageteam.agent import ImageAgent
         agent = ImageAgent()
         return await agent.upscale(image, scale)
 
     @app.post("/remove-bg")
     async def remove_bg(image: str = Form(...)):
-        from image_agent.agent import ImageAgent
+        from teams.imageteam.agent import ImageAgent
         agent = ImageAgent()
         return await agent.remove_bg(image)
 
     @app.post("/describe")
     async def describe(image: str = Form(...)):
-        from image_agent.agent import ImageAgent
+        from teams.imageteam.agent import ImageAgent
         agent = ImageAgent()
         return await agent.describe(image)
 
     @app.post("/auto")
     async def auto(prompt: str = Form(...), image: Optional[str] = Form(None)):
-        from image_agent.agent import ImageAgent
+        from teams.imageteam.agent import ImageAgent
         agent = ImageAgent()
         return await agent.run(prompt, image_b64=image or "")
 

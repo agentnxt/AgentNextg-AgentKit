@@ -13,7 +13,7 @@ Flow:
 
 import json
 from dataclasses import dataclass, field
-from eng_team.agents import (
+from teams.devteam.agents import (
     AgentCodeDeveloper,
     ClaudeArchitect,
     ClaudeReviewer,

@@ -20,7 +20,7 @@ def main():
 @click.option("--output", "-o", default="output.png", help="Output file")
 def generate(prompt, model, width, height, output):
     """Generate an image from text."""
-    from image_agent.agent import ImageAgent
+    from teams.imageteam.agent import ImageAgent
     agent = ImageAgent()
     result = asyncio.run(agent.generate(prompt, model, width, height))
     print(json.dumps(result, indent=2))
@@ -32,7 +32,7 @@ def generate(prompt, model, width, height, output):
 def serve(host, port):
     """Start the Image Agent API server."""
     import uvicorn
-    from image_agent.api import create_app
+    from teams.imageteam.api import create_app
     app = create_app()
     uvicorn.run(app, host=host, port=port)
 
@@ -42,7 +42,7 @@ def serve(host, port):
 def describe(image_path):
     """Describe an image."""
     import base64
-    from image_agent.agent import ImageAgent
+    from teams.imageteam.agent import ImageAgent
     with open(image_path, "rb") as f:
         b64 = base64.b64encode(f.read()).decode()
     agent = ImageAgent()

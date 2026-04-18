@@ -2,8 +2,8 @@
 
 __version__ = "0.1.0"
 
-from eng_team.team import EngineeringTeam
-from eng_team.agents import (
+from teams.devteam.team import EngineeringTeam
+from teams.devteam.agents import (
     AgentCodeDeveloper,
     ClaudeArchitect,
     ClaudeReviewer,

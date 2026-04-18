@@ -2,7 +2,7 @@
 
 __version__ = "0.1.0"
 
-from image_agent.agent import ImageAgent
-from image_agent.api import create_app
+from teams.imageteam.agent import ImageAgent
+from teams.imageteam.api import create_app
 
 __all__ = ["ImageAgent", "create_app"]

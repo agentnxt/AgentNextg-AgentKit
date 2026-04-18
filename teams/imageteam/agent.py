@@ -15,8 +15,8 @@ from langgraph.graph import StateGraph, END
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_anthropic import ChatAnthropic
 
-from image_agent.tools import TOOL_MAP
-from image_agent.memory import ImageMemory
+from teams.imageteam.tools import TOOL_MAP
+from teams.imageteam.memory import ImageMemory
 
 
 ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY", "")
