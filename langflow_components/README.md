@@ -15,6 +15,7 @@ All three share the same `AgentState` TypedDict from `teams._shared.state`, so t
 ```bash
 # Option 1: environment variable (recommended for dev)
 export LANGFLOW_COMPONENTS_PATH=$HOME/agentkit/langflow_components
+# (components live in the agentkit/ subdirectory — that becomes their category)
 langflow run
 
 # Option 2: mount into Langflow's container
