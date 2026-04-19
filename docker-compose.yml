@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  agentkit:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: agentkit
+    ports:
+      - "8000:8000"
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - DATABASE_URL=${DATABASE_URL:-sqlite:///./agentkit.db}
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped
+
+  # Langflow integration for visual flow building
+  langflow:
+    image: langflowai/langflow:latest
+    container_name: langflow
+    ports:
+      - "7860:7860"
+    environment:
+      - DATABASE_URL=sqlite:///langflow.db
+      - STORE=true
+    volumes:
+      - langflow_data:/app/data
+    restart: unless-stopped
+
+volumes:
+  langflow_data:
