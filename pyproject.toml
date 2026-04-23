@@ -12,7 +12,10 @@ authors = [{ name = "OpenAutonomyx" }]
 dependencies = [
     "httpx>=0.27.0",
     "pydantic>=2.7.0",
+    "fastapi>=0.115.0",
+    "uvicorn>=0.30.0",
 ]
+
 
 [project.optional-dependencies]
 anthropic = ["anthropic>=0.45.0"]
@@ -21,7 +24,7 @@ autogen = ["autogen-agentchat>=0.4.0"]
 crewai = ["crewai>=0.80.0"]
 google = ["google-adk>=0.1.0"]
 all = ["autonomyx-adk[anthropic,langchain,crewai]"]
-dev = ["pytest", "pytest-asyncio", "respx"]
+dev = ["pytest", "pytest-asyncio", "respx", "pytest-cov"]
 
 [project.scripts]
 autonomyx = "autonomyx.cli:main"
