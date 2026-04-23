@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>AgentNxt CodeReviewer Web</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 2rem; max-width: 980px; }
+    section { border: 1px solid #ddd; padding: 1rem; margin-bottom: 1rem; border-radius: 8px; }
+    label { display: block; margin-top: 0.5rem; }
+    textarea { width: 100%; min-height: 140px; }
+    pre { background: #f8f8f8; padding: 0.75rem; overflow: auto; }
+  </style>
+</head>
+<body>
+  <h1>AgentNxt CodeReviewer Web</h1>
+
+  <section>
+    <h2>Runtime Profile</h2>
+    <label>Profile Name <input id="profile-name" value="default-anthropic" /></label>
+    <label>Provider
+      <select id="provider">
+        <option value="anthropic">Anthropic</option>
+        <option value="bedrock">Amazon Bedrock</option>
+        <option value="vertex">Google Vertex AI</option>
+        <option value="foundry">Microsoft Foundry</option>
+      </select>
+    </label>
+    <label>Model
+      <select id="model"></select>
+    </label>
+    <label>Auth Config (JSON)
+      <textarea id="auth">{"api_key":"env:ANTHROPIC_API_KEY"}</textarea>
+    </label>
+    <button onclick="saveProfile()">Save Runtime Profile</button>
+    <pre id="profile-result"></pre>
+  </section>
+
+  <section>
+    <h2>Submit Review Job</h2>
+    <label>Runtime Profile ID <input id="runtime-profile-id" /></label>
+    <label>Repository Name <input id="repo-name" value="agentnxt/agentkit" /></label>
+    <label>Branch <input id="branch" value="work" /></label>
+    <label>Commit SHA <input id="sha" value="deadbeef" /></label>
+    <label>Change Patch
+      <textarea id="patch">+ print("debug")</textarea>
+    </label>
+    <button onclick="submitReview()">Run Review</button>
+    <pre id="review-result"></pre>
+  </section>
+
+  <script>
+    const providerModels = {
+      anthropic: ["claude-sonnet-4-20250514", "claude-opus-4-20250514"],
+      bedrock: ["anthropic.claude-3-7-sonnet-20250219-v1:0", "anthropic.claude-3-5-haiku-20241022-v1:0"],
+      vertex: ["claude-sonnet-4@20250514", "claude-opus-4@20250514"],
+      foundry: ["Claude-Sonnet-4", "Claude-Opus-4"]
+    };
+
+    function refreshModels() {
+      const provider = document.getElementById("provider").value;
+      const modelSel = document.getElementById("model");
+      modelSel.innerHTML = "";
+      (providerModels[provider] || []).forEach(m => {
+        const opt = document.createElement("option");
+        opt.value = m;
+        opt.textContent = m;
+        modelSel.appendChild(opt);
+      });
+    }
+
+    async function saveProfile() {
+      refreshModels();
+      const body = {
+        name: document.getElementById("profile-name").value,
+        provider_config: {
+          provider: document.getElementById("provider").value,
+          auth_config: JSON.parse(document.getElementById("auth").value || "{}")
+        },
+        model_selection: {
+          model: document.getElementById("model").value,
+          temperature: 0,
+          max_tokens: 4096
+        },
+        is_default: true
+      };
+      const res = await fetch("/api/runtime-profiles", { method: "POST", headers: {"content-type": "application/json"}, body: JSON.stringify(body) });
+      const data = await res.json();
+      document.getElementById("profile-result").textContent = JSON.stringify(data, null, 2);
+      if (data.profile_id) document.getElementById("runtime-profile-id").value = data.profile_id;
+    }
+
+    async function submitReview() {
+      const body = {
+        runtime_profile_id: document.getElementById("runtime-profile-id").value,
+        repository: {
+          name: document.getElementById("repo-name").value,
+          branch: document.getElementById("branch").value,
+          commit_sha: document.getElementById("sha").value
+        },
+        file_changes: [{ path: "sample.py", change_type: "modified", patch: document.getElementById("patch").value }]
+      };
+      const res = await fetch("/api/reviews", { method: "POST", headers: {"content-type": "application/json"}, body: JSON.stringify(body) });
+      const data = await res.json();
+      document.getElementById("review-result").textContent = JSON.stringify(data, null, 2);
+    }
+
+    document.getElementById("provider").addEventListener("change", refreshModels);
+    refreshModels();
+  </script>
+</body>
+</html>
