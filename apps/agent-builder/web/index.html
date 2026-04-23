@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AgentBuilder</title>
+    <style>
+      body { font-family: Arial, sans-serif; margin: 2rem; background: #f5f7fb; }
+      .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+      textarea { width: 100%; min-height: 360px; font-family: monospace; }
+      pre { background: #111; color: #def; padding: 1rem; min-height: 360px; overflow-x: auto; }
+      button { margin-right: 0.5rem; padding: 0.5rem 1rem; }
+      h1 { margin-top: 0; }
+    </style>
+  </head>
+  <body>
+    <h1>AgentBuilder</h1>
+    <p>Production interface for creating, validating, versioning, and exporting AgentNxt agent definitions.</p>
+    <div>
+      <button onclick="saveAgent()">Save</button>
+      <button onclick="validateAgent()">Validate</button>
+      <button onclick="listAgents()">Refresh List</button>
+    </div>
+    <div class="grid">
+      <div>
+        <h3>Agent Definition JSON</h3>
+        <textarea id="payload"></textarea>
+      </div>
+      <div>
+        <h3>Response</h3>
+        <pre id="output"></pre>
+      </div>
+    </div>
+    <h3>Agents</h3>
+    <pre id="agents"></pre>
+
+    <script>
+      const starter = {
+        agent_id: "support-agent",
+        name: "Support Agent",
+        version: "v1.0.0",
+        status: "draft",
+        model_refs: ["model-registry/gpt-4.1"],
+        prompt_refs: ["prompt-registry/support/triage-v1"],
+        skill_refs: ["skill-registry/incident-triage"],
+        tool_refs: ["mcp-registry/github"],
+        runtime_config: {
+          framework: "langgraph",
+          max_iterations: 12,
+          timeout_seconds: 180,
+          memory_enabled: true,
+          concurrency: 2,
+        },
+        policy_metadata: { owner: "agentnxt-platform", approval_ticket: "CHG-1001" }
+      };
+      document.getElementById("payload").value = JSON.stringify(starter, null, 2);
+
+      function parsed() { return JSON.parse(document.getElementById("payload").value); }
+      function render(id, data) { document.getElementById(id).textContent = JSON.stringify(data, null, 2); }
+
+      async function saveAgent() {
+        const res = await fetch('/api/agents', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(parsed())
+        });
+        render('output', await res.json());
+        await listAgents();
+      }
+
+      async function validateAgent() {
+        const res = await fetch('/api/agents/validate', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(parsed())
+        });
+        render('output', await res.json());
+      }
+
+      async function listAgents() {
+        const res = await fetch('/api/agents');
+        render('agents', await res.json());
+      }
+      listAgents();
+    </script>
+  </body>
+</html>
