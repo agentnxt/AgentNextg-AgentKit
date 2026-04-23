@@ -1,0 +1,11 @@
+version: "3.9"
+services:
+  code-reviewer:
+    build:
+      context: ../..
+      dockerfile: deploy/agent-builder/Dockerfile
+    command: uvicorn code_reviewer.api:app --host 0.0.0.0 --port 8090
+    ports:
+      - "8090:8090"
+    environment:
+      - PYTHONPATH=/app
