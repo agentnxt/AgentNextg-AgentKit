@@ -62,6 +62,19 @@ Do **not** redesign the whole platform before shipping the next usable product.
 Make only the minimum structural changes needed for the current product, but leave the repo cleaner than you found it.
 
 ---
+## Production Product Rule
+
+Unless explicitly told otherwise, product prompts must build production applications, not MVPs, prototypes, mockups, or demos.
+
+Every product build should aim for:
+- real architecture
+- real usability
+- testability
+- deployability
+- operational clarity
+- maintainable structure
+- documentation suitable for real use
+- clear implemented vs deferred items
 
 ## Platform Context
 
