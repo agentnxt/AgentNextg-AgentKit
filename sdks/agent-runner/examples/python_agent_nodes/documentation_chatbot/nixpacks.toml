@@ -1,5 +1,0 @@
-[phases.install]
-cmds = ["./install.sh"]
-
-[start]
-cmd = "python main.py"
