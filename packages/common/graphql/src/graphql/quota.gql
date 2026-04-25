@@ -1,0 +1,19 @@
+query quota {
+  currentUser {
+    id
+    quota {
+      name
+      blobLimit
+      storageQuota
+      usedStorageQuota
+      copilotLimit
+      humanReadable {
+        name
+        blobLimit
+        storageQuota
+        usedStorageQuota
+        copilotLimit
+      }
+    }
+  }
+}

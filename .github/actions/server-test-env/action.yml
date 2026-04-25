@@ -1,0 +1,35 @@
+name: 'Prepare Server Test Environment'
+description: 'Prepare Server Test Environment'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Bundle @afk/reader
+      shell: bash
+      run: |
+        yarn oa @afk/reader build
+
+    - name: Initialize database
+      shell: bash
+      run: |
+        psql -h localhost -U postgres -c "CREATE DATABASE oa;"
+        psql -h localhost -U postgres -c "CREATE USER oa WITH PASSWORD 'oa';"
+        psql -h localhost -U postgres -c "ALTER USER oa WITH SUPERUSER;"
+      env:
+        PGPASSWORD: oa
+
+    - name: Run init-db script
+      shell: bash
+      env:
+        NODE_ENV: test
+      run: |
+        yarn oa @afk/server prisma generate
+        yarn oa @afk/server prisma migrate deploy
+        yarn oa @afk/server data-migration run
+
+    - name: Import config
+      shell: bash
+      env:
+        DEFAULT_CONFIG: '{}'
+      run: |
+        printf '%s\n' "${SERVER_CONFIG:-$DEFAULT_CONFIG}" > ./packages/backend/server/config.json

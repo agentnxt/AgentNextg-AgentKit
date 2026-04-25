@@ -1,0 +1,11 @@
+mutation updateUserDocs($docId: String!, $title: String, $content: String, $metadata: String) {
+  updateUserDocs(content: $content, docId: $docId, title: $title, metadata: $metadata) {
+    sessionId
+    docId
+    title
+    content
+    metadata
+    createdAt
+    updatedAt
+  }
+}

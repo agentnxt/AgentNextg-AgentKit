@@ -1,0 +1,31 @@
+{
+  "extends": ["@commitlint/config-conventional"],
+  "rules": {
+    "scope-enum": [
+      2,
+      "always",
+      [
+        "admin",
+        "electron",
+        "server",
+        "core",
+        "web",
+        "mobile",
+        "ios",
+        "android",
+        "docs",
+        "component",
+        "env",
+        "graphql",
+        "hooks",
+        "i18n",
+        "native",
+        "templates",
+        "debug",
+        "infra",
+        "editor",
+        "tools"
+      ]
+    ]
+  }
+}

@@ -1,0 +1,3 @@
+mutation submitWishlist($email: String!) {
+  submitWishlist(email: $email)
+}

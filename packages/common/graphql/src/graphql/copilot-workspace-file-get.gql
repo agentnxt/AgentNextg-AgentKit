@@ -1,0 +1,24 @@
+query getUserFiles($pagination: PaginationInput!) {
+  currentUser {
+    embedding {
+      files(pagination: $pagination) {
+        totalCount
+        pageInfo {
+          endCursor
+          hasNextPage
+        }
+        edges {
+          node {
+            fileId
+            fileName
+            blobId
+            mimeType
+            size
+            createdAt
+            metadata
+          }
+        }
+      }
+    }
+  }
+}

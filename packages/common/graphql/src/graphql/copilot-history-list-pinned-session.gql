@@ -1,0 +1,18 @@
+#import "./fragments/copilot.gql"
+
+query getCopilotPinnedSessions(
+  $messageOrder: ChatHistoryOrder
+  $withPrompt: Boolean
+) {
+  currentUser {
+    copilot {
+      chats(pagination: { first: 1 }, options: {
+        pinned: true,
+        messageOrder: $messageOrder,
+        withPrompt: $withPrompt
+      }) {
+        ...PaginatedCopilotChats
+      }
+    }
+  }
+}

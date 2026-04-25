@@ -1,0 +1,9 @@
+query listContext($sessionId: String!) {
+  currentUser {
+    copilot {
+      contexts(sessionId: $sessionId) {
+        id
+      }
+    }
+  }
+}

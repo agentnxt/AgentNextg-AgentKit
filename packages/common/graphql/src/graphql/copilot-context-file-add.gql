@@ -1,0 +1,12 @@
+mutation addContextFile($contextId: String!, $content: Upload!) {
+  addContextFile(content: $content, contextId: $contextId) {
+    id
+    createdAt
+    name
+    mimeType
+    chunkSize
+    error
+    status
+    blobId
+  }
+}

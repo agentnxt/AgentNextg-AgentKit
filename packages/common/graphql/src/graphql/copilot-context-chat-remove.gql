@@ -1,0 +1,9 @@
+query removeContextChat($contextId: String!, $sessionId: String!) {
+  currentUser {
+    copilot {
+      contexts(contextId: $contextId) {
+        removeContextChat(sessionId: $sessionId)
+      }
+    }
+  }
+}

@@ -1,0 +1,189 @@
+name: Build Images
+
+on:
+  workflow_call:
+    inputs:
+      build-type:
+        type: string
+        required: true
+      app-version:
+        type: string
+        required: true
+      git-short-hash:
+        type: string
+        required: true
+
+permissions:
+  contents: 'write'
+  id-token: 'write'
+  packages: 'write'
+
+jobs:
+  build-web:
+    name: Build Frontend
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.build-type }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Version
+        uses: ./.github/actions/setup-version
+        with:
+          app-version: ${{ inputs.app-version }}
+      - name: Setup Node.js
+        uses: ./.github/actions/setup-node
+      - name: Build Core
+        run: yarn oa app build
+        env:
+          BUILD_TYPE: ${{ inputs.build-type }}
+          CAPTCHA_SITE_KEY: ${{ secrets.CAPTCHA_SITE_KEY }}
+      - name: Upload web artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: web
+          path: ./packages/frontend/app/dist
+          if-no-files-found: error
+
+  build-server-native:
+    name: Build Server native - ${{ matrix.targets.name }}
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.build-type }}
+    strategy:
+      fail-fast: false
+      matrix:
+        targets:
+          - name: x86_64-unknown-linux-gnu
+            file: server-native.x64.node
+          - name: aarch64-unknown-linux-gnu
+            file: server-native.arm64.node
+          - name: armv7-unknown-linux-gnueabihf
+            file: server-native.armv7.node
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Version
+        uses: ./.github/actions/setup-version
+        with:
+          app-version: ${{ inputs.app-version }}
+      - name: Setup Node.js
+        uses: ./.github/actions/setup-node
+        with:
+          extra-flags: workspaces focus @afk/server-native
+      - name: Build Rust
+        uses: ./.github/actions/build-rust
+        with:
+          target: ${{ matrix.targets.name }}
+          package: '@afk/server-native'
+      - name: Rename ${{ matrix.targets.file }}
+        run: |
+          mv ./packages/backend/native/server-native.node ./packages/backend/native/${{ matrix.targets.file }}
+      - name: Upload ${{ matrix.targets.file }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: server-native-${{ matrix.targets.file }}
+          path: ./packages/backend/native/${{ matrix.targets.file }}
+          if-no-files-found: error
+
+  build-server:
+    name: Build Server
+    runs-on: ubuntu-latest
+    needs:
+      - build-server-native
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Version
+        uses: ./.github/actions/setup-version
+        with:
+          app-version: ${{ inputs.app-version }}
+      - name: Setup Node.js
+        uses: ./.github/actions/setup-node
+        with:
+          extra-flags: workspaces focus @afk/server
+      - name: Download server-native
+        uses: actions/download-artifact@v4
+        with:
+          pattern: server-native-*
+          merge-multiple: true
+          path: ./packages/backend/native
+      - name: List server-native files
+        run: |
+          ls -alh ./packages/backend/native
+          yarn workspace @afk/server build
+      - name: Upload server dist
+        uses: actions/upload-artifact@v4
+        with:
+          name: server-dist
+          path: ./packages/backend/server/dist
+          if-no-files-found: error
+
+  build-image:
+    name: Build Docker Image
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.build-type }}
+    needs:
+      - build-web
+      - build-server
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Version
+        uses: ./.github/actions/setup-version
+        with:
+          app-version: ${{ inputs.app-version }}
+
+      - name: Download native artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: server-native-*
+          path: ./packages/backend/native/
+          merge-multiple: true
+      - name: Download web artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: web
+          path: ./packages/frontend/app/dist
+      - name: Download server dist
+        uses: actions/download-artifact@v4
+        with:
+          name: server-dist
+          path: ./packages/backend/server/dist
+
+      - name: Install Node.js dependencies
+        run: |
+          yarn config set --json supportedArchitectures.cpu '["x64", "arm64", "arm"]'
+          yarn config set --json supportedArchitectures.libc '["glibc"]'
+          yarn workspaces focus @afk/server --production
+          yarn workspace @afk/server prisma generate
+          rm -rf ./packages/backend/server/node_modules
+          rm -rf ./node_modules/@afk/server
+          cp -aL ./node_modules/@afk ./@afk
+          mv ./node_modules ./packages/backend/server
+          rm -rf ./packages/backend/server/node_modules/@afk
+          mv ./@afk ./packages/backend/server/node_modules
+          # clean caches to save disk space
+          yarn cache clean --all || true
+          rm -rf ./packages/backend/server/node_modules/.cache || true
+          ls -alh ./packages/backend/server/node_modules/@napi-rs
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          logout: false
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          pull: true
+          platforms: linux/amd64,linux/arm64 # ,linux/arm/v7
+          provenance: true
+          file: .docker/Dockerfile
+          # Use GitHub Actions cache backend to reduce local disk usage
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          tags: ghcr.io/afk-surf/open-agent:${{inputs.build-type}}-${{ inputs.git-short-hash }},ghcr.io/afk-surf/open-agent:${{inputs.build-type}}

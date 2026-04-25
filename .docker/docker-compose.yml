@@ -1,0 +1,61 @@
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_DB: open_agent
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - ./database:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    volumes:
+      - ./cache:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    restart: unless-stopped
+
+  app-init:
+    image: ghcr.io/afk-surf/open-agent:${VERSION:-canary}
+    environment:
+      - SERVER_FLAVOR=script
+      - DATABASE_URL=postgres://postgres:postgres@postgres:5432/open_agent
+      - REDIS_SERVER_HOST=redis
+    volumes:
+      - ./config.json:/app/config.json
+    command: yarn predeploy
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: 'no' # only run once for initialization
+
+  app:
+    image: ghcr.io/afk-surf/open-agent:${VERSION:-canary}
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=postgres://postgres:postgres@postgres:5432/open_agent
+      - REDIS_SERVER_HOST=redis
+    ports:
+      - '3010:3010'
+    volumes:
+      - ./config.json:/app/config.json
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      app-init:
+        condition: service_completed_successfully
+    restart: unless-stopped

@@ -1,0 +1,12 @@
+mutation addContextFileExists($contextId: String!, $blobId: String!) {
+  addContextFile(contextId: $contextId, blobId: $blobId) {
+    id
+    createdAt
+    name
+    mimeType
+    chunkSize
+    error
+    status
+    blobId
+  }
+}

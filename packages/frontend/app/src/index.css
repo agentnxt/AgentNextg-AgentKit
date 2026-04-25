@@ -1,0 +1,90 @@
+@import 'tailwindcss';
+@plugin "@tailwindcss/typography";
+
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--affine-v2-layer-insideBorder-border, currentColor);
+  }
+}
+
+@theme {
+  --color-text-primary: var(--affine-v2-text-primary);
+  --color-text-secondary: var(--affine-v2-text-secondary);
+  --color-text-tertiary: var(--affine-v2-text-tertiary);
+  --color-text-placeholder: var(--affine-v2-text-placeholder);
+  --color-primary: var(--affine-v2-button-primary);
+  --color-border-primary: var(--affine-v2-layer-insideBorder-border);
+  --color-hover: var(--affine-v2-layer-background-hoverOverlay);
+  --color-icon-primary: var(--affine-v2-icon-primary);
+  --color-icon-secondary: var(--affine-v2-icon-secondary);
+  --color-layer-background-secondary: var(
+    --affine-v2-layer-background-secondary
+  );
+  --color-status-success: var(--affine-v2-status-success);
+  --color-icon-tertiary: var(--affine-v2-icon-tertiary);
+  --shadow-view: 0px 1px 5px rgba(0, 0, 0, 0.05);
+}
+
+.panel {
+  @apply border rounded-lg overflow-hidden shadow-view bg-white;
+}
+.onboarding-title {
+  @apply mb-2 text-center text-2xl font-bold tracking-[-0.32px];
+}
+.onboarding-caption {
+  @apply max-w-[550px] text-center text-text-secondary text-[15px] leading-6 mb-4;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+html {
+  background-color: var(--affine-v2-layer-background-secondary);
+}
+body:has(#oa-content) {
+  padding: 8px !important;
+  transition: padding 0.2s ease;
+}
+body.sidebar-open:has(#app-sidebar) {
+  padding-left: 0px !important;
+}
+
+.with-cursor::after {
+  content: '';
+  display: inline-block;
+  width: 0.5em;
+  height: 1em;
+  background: currentColor;
+  vertical-align: middle;
+  animation: blink-cursor 1s steps(1) infinite;
+  transform: translateY(-2px);
+}
+
+.with-cursor p:last-of-type {
+  display: inline-block;
+}
+
+@keyframes blink-cursor {
+  0%,
+  50% {
+    opacity: 1;
+  }
+  51%,
+  100% {
+    opacity: 0;
+  }
+}

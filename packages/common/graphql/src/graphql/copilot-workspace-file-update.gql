@@ -1,0 +1,11 @@
+mutation updateUserFiles($fileId: String!, $metadata: String!) {
+  updateUserFiles(fileId: $fileId, metadata: $metadata) {
+    fileId
+    fileName
+    blobId
+    mimeType
+    size
+    metadata
+    createdAt
+  }
+}
