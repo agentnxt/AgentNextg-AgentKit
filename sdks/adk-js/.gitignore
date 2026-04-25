@@ -1,0 +1,9 @@
+dist/
+node_modules/
+*.log
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/settings.json
+tests/**/package-lock.json
+coverage/
