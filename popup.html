@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>OpenHands GitHub Launcher</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      width: 300px;
+      padding: 16px;
+      color: #24292f;
+    }
+    
+    h1 {
+      font-size: 18px;
+      margin-top: 0;
+      margin-bottom: 16px;
+      border-bottom: 1px solid #d0d7de;
+      padding-bottom: 8px;
+      display: flex;
+      align-items: center;
+    }
+    
+    .logo {
+      width: 24px;
+      height: 24px;
+      margin-right: 8px;
+    }
+    
+    .message {
+      font-size: 14px;
+      line-height: 1.5;
+      margin-bottom: 16px;
+    }
+    
+    .button-container {
+      display: flex;
+      justify-content: space-between;
+    }
+    
+    button {
+      background-color: #f6f8fa;
+      border: 1px solid rgba(27, 31, 36, 0.15);
+      border-radius: 6px;
+      padding: 5px 16px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+    
+    button:hover {
+      background-color: #f3f4f6;
+    }
+    
+    button.primary {
+      background-color: rgba(201, 185, 116, 0.9); /* OpenHands yellow */
+      color: #0D0F11; /* OpenHands base dark color */
+      border-color: #CFB755;
+    }
+    
+    button.primary:hover {
+      background-color: #C9B974; /* Full OpenHands yellow on hover */
+    }
+    
+    .status {
+      margin-top: 16px;
+      font-size: 14px;
+      color: #57606a;
+    }
+    
+    .github-only {
+      display: none;
+    }
+    
+    .settings-link {
+      display: block;
+      margin-top: 16px;
+      text-align: center;
+      font-size: 12px;
+      color: #0969da;
+      text-decoration: none;
+    }
+    
+    .settings-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <h1>
+    <img src="images/openhands-logo.svg" alt="OpenHands Logo" class="logo">
+    OpenHands GitHub Launcher
+  </h1>
+  
+  <div id="notGitHub" class="message">
+    Navigate to a GitHub repository or pull request to use this extension.
+  </div>
+  
+  <div id="gitHubContent" class="github-only">
+    <div class="message">
+      Launch an OpenHands conversation for the current GitHub repository or pull request.
+    </div>
+    
+    <div class="button-container">
+      <button id="settingsButton">Settings</button>
+      <button id="launchButton" class="primary">Launch OpenHands</button>
+    </div>
+    
+    <div id="status" class="status"></div>
+    
+    <div id="corsError" style="display: none; margin-top: 16px; padding: 8px; background-color: #ffebe9; border: 1px solid #ff8182; border-radius: 6px;">
+      <p style="margin: 0 0 8px 0; font-size: 13px;">CORS error detected. This is a browser security restriction.</p>
+      <button id="openWebsiteButton" style="width: 100%;">Open OpenHands Website</button>
+    </div>
+  </div>
+  
+  <a href="#" id="settingsLink" class="settings-link">Configure API Key Settings</a>
+  
+  <script src="popup.js"></script>
+</body>
+</html>
