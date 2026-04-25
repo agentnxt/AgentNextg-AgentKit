@@ -1,0 +1,34 @@
+name: Release Images
+
+on:
+  schedule:
+    - cron: '0 9 * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+  id-token: write
+  packages: write
+
+jobs:
+  prepare:
+    name: Prepare
+    runs-on: ubuntu-latest
+    outputs:
+      APP_VERSION: ${{ steps.prepare.outputs.APP_VERSION }}
+      GIT_SHORT_HASH: ${{ steps.prepare.outputs.GIT_SHORT_HASH }}
+      BUILD_TYPE: ${{ steps.prepare.outputs.BUILD_TYPE }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prepare Release
+        id: prepare
+        uses: ./.github/actions/prepare-release
+
+  build-image:
+    name: Build Docker Image
+    needs: prepare
+    uses: ./.github/workflows/build-images.yml
+    secrets: inherit
+    with:
+      build-type: ${{ needs.prepare.outputs.BUILD_TYPE }}
+      app-version: ${{ needs.prepare.outputs.APP_VERSION }}
+      git-short-hash: ${{ needs.prepare.outputs.GIT_SHORT_HASH }}

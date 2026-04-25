@@ -1,0 +1,9 @@
+mutation addContextChat($contextId: String!, $sessionId: String!) {
+  addContextChat(contextId: $contextId, sessionId: $sessionId) {
+    id
+    createdAt
+    chunkSize
+    error
+    status
+  }
+}

@@ -1,0 +1,3 @@
+mutation removeUserDocs($docId: String!) {
+  removeUserDocs(docId: $docId)
+}

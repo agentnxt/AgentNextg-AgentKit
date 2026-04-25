@@ -1,0 +1,35 @@
+query listContextObject(
+  $sessionId: String!
+  $contextId: String!
+) {
+  currentUser {
+    copilot {
+      contexts(sessionId: $sessionId, contextId: $contextId) {
+        chats {
+          id
+          chunkSize
+          error
+          status
+          createdAt
+        }
+        docs {
+          id
+          chunkSize
+          error
+          status
+          createdAt
+        }
+        files {
+          id
+          name
+          mimeType
+          blobId
+          chunkSize
+          error
+          status
+          createdAt
+        }
+      }
+    }
+  }
+}

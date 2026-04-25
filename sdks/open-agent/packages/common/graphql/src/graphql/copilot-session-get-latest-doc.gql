@@ -1,0 +1,18 @@
+#import "./fragments/copilot.gql"
+
+query getCopilotLatestDocSession {
+  currentUser {
+    copilot {
+      chats(
+        pagination: { first: 1 }
+        options: {
+          sessionOrder: desc
+          action: false
+          withMessages: true
+        }
+      ) {
+        ...PaginatedCopilotChats
+      }
+    }
+  }
+}

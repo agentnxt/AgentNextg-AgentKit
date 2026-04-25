@@ -1,0 +1,1 @@
+export { AvatarStorage } from './avatar';

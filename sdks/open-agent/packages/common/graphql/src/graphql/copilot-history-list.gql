@@ -1,0 +1,14 @@
+#import "./fragments/copilot.gql"
+
+query getCopilotHistories(
+  $pagination: PaginationInput!
+  $options: QueryChatHistoriesInput
+) {
+  currentUser {
+    copilot {
+      chats(pagination: $pagination, options: $options) {
+        ...PaginatedCopilotChats
+      }
+    }
+  }
+}

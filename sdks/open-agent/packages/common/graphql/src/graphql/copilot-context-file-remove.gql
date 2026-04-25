@@ -1,0 +1,9 @@
+query removeContextFile($contextId: String!, $fileId: String!) {
+  currentUser {
+    copilot {
+      contexts(contextId: $contextId) {
+        removeContextFile(fileId: $fileId)
+      }
+    }
+  }
+}

@@ -1,0 +1,29 @@
+query getCopilotHistoryIds(
+  $pagination: PaginationInput!
+  $options: QueryChatHistoriesInput
+) {
+  currentUser {
+    copilot {
+      chats(pagination: $pagination, options: $options) {
+        pageInfo {
+          hasNextPage
+          hasPreviousPage
+          startCursor
+          endCursor
+        }
+        edges {
+          cursor
+          node {
+            sessionId
+            pinned
+            messages {
+              id
+              role
+              createdAt
+            }
+          }
+        }
+      }
+    }
+  }
+}

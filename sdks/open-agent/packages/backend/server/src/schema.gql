@@ -1,0 +1,913 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+enum AiJobStatus {
+  claimed
+  failed
+  finished
+  pending
+  running
+}
+
+type AppConfigValidateResult {
+  error: String
+  key: String!
+  module: String!
+  valid: Boolean!
+  value: JSON!
+}
+
+type BlobNotFoundDataType {
+  blobId: String!
+  userId: String!
+}
+
+enum ChatHistoryOrder {
+  asc
+  desc
+}
+
+type ChatMessage {
+  attachments: [String!]
+  content: String!
+  createdAt: DateTime!
+  id: ID
+  params: JSON
+  role: String!
+  streamObjects: [StreamObject!]
+}
+
+enum ContextEmbedStatus {
+  failed
+  finished
+  processing
+}
+
+type ContextUserEmbeddingStatus {
+  embedded: SafeInt!
+  total: SafeInt!
+}
+
+type Copilot {
+  audioTranscription(blobId: String, jobId: String): TranscriptionResultType
+  chats(options: QueryChatHistoriesInput, pagination: PaginationInput!): PaginatedCopilotHistoriesType!
+
+  """Get the context list of a session"""
+  contexts(contextId: String, sessionId: String): [CopilotContext!]!
+
+  """query user embedding status"""
+  embeddingStatus: ContextUserEmbeddingStatus!
+
+  """Get the quota of the user"""
+  quota: CopilotQuota!
+
+  """Get the session by id"""
+  session(sessionId: String!): CopilotSessionType!
+  userId: String!
+}
+
+type CopilotContext {
+  """list files in context"""
+  chats: [CopilotContextChatOrDoc!]!
+
+  """list files in context"""
+  docs: [CopilotContextChatOrDoc!]!
+
+  """list files in context"""
+  files: [CopilotContextFile!]!
+  id: ID
+
+  """remove a chat from context"""
+  removeContextChat(sessionId: String!): Boolean!
+
+  """remove a doc from context"""
+  removeContextDoc(docId: String!): Boolean!
+
+  """remove a file from context"""
+  removeContextFile(fileId: String!): Boolean!
+  userId: ID!
+}
+
+type CopilotContextChatOrDoc {
+  chunkSize: SafeInt!
+  createdAt: SafeInt!
+  error: String
+  id: ID!
+  status: ContextEmbedStatus!
+}
+
+type CopilotContextFile {
+  blobId: String!
+  chunkSize: SafeInt!
+  createdAt: SafeInt!
+  error: String
+  id: ID!
+  mimeType: String!
+  name: String!
+  status: ContextEmbedStatus!
+}
+
+type CopilotContextFileNotSupportedDataType {
+  fileName: String!
+  message: String!
+}
+
+type CopilotDocNotFoundDataType {
+  docId: String!
+}
+
+type CopilotFailedToAddUserArtifactDataType {
+  message: String!
+  type: String!
+}
+
+type CopilotFailedToGenerateEmbeddingDataType {
+  message: String!
+  provider: String!
+}
+
+type CopilotFailedToMatchContextDataType {
+  content: String!
+  contextId: String!
+  message: String!
+}
+
+type CopilotFailedToMatchGlobalContextDataType {
+  content: String!
+  message: String!
+  userId: String!
+}
+
+type CopilotFailedToModifyContextDataType {
+  contextId: String!
+  message: String!
+}
+
+type CopilotHistories {
+  """An mark identifying which view to use to display the session"""
+  action: String
+  createdAt: DateTime!
+  messages: [ChatMessage!]!
+  metadata: String!
+  model: String!
+  optionalModels: [String!]!
+  pinned: Boolean!
+  promptName: String!
+  sessionId: String!
+  title: String
+
+  """The number of tokens used in the session"""
+  tokens: Int!
+  updatedAt: DateTime!
+}
+
+type CopilotHistoriesTypeEdge {
+  cursor: String!
+  node: CopilotHistories!
+}
+
+type CopilotInvalidContextDataType {
+  contextId: String!
+}
+
+type CopilotMessageNotFoundDataType {
+  messageId: String!
+}
+
+input CopilotPromptConfigInput {
+  frequencyPenalty: Float
+  presencePenalty: Float
+  temperature: Float
+  topP: Float
+}
+
+type CopilotPromptConfigType {
+  frequencyPenalty: Float
+  presencePenalty: Float
+  temperature: Float
+  topP: Float
+}
+
+input CopilotPromptMessageInput {
+  content: String!
+  params: JSON
+  role: CopilotPromptMessageRole!
+}
+
+enum CopilotPromptMessageRole {
+  assistant
+  system
+  user
+}
+
+type CopilotPromptMessageType {
+  content: String!
+  params: JSON
+  role: CopilotPromptMessageRole!
+}
+
+type CopilotPromptNotFoundDataType {
+  name: String!
+}
+
+type CopilotPromptType {
+  action: String
+  config: CopilotPromptConfigType
+  messages: [CopilotPromptMessageType!]!
+  model: String!
+  name: String!
+}
+
+type CopilotProviderNotSupportedDataType {
+  kind: String!
+  provider: String!
+}
+
+type CopilotProviderSideErrorDataType {
+  kind: String!
+  message: String!
+  provider: String!
+}
+
+type CopilotQuota {
+  limit: SafeInt
+  used: SafeInt!
+}
+
+type CopilotSessionType {
+  id: ID!
+  model: String!
+  optionalModels: [String!]!
+  pinned: Boolean!
+  promptName: String!
+  title: String
+}
+
+type CopilotUserConfig {
+  """list user docs in context"""
+  docs(pagination: PaginationInput!): PaginatedCopilotUserDoc!
+  files(pagination: PaginationInput!): PaginatedCopilotUserFile!
+  userId: String!
+}
+
+type CopilotUserDoc {
+  content: String!
+  createdAt: DateTime!
+  docId: String!
+  metadata: String!
+  sessionId: String!
+  title: String!
+  updatedAt: DateTime!
+}
+
+type CopilotUserDocTypeEdge {
+  cursor: String!
+  node: CopilotUserDoc!
+}
+
+type CopilotUserFile {
+  blobId: String!
+  createdAt: DateTime!
+  fileId: String!
+  fileName: String!
+  metadata: String!
+  mimeType: String!
+  size: SafeInt!
+  userId: String!
+}
+
+type CopilotUserFileTypeEdge {
+  cursor: String!
+  node: CopilotUserFile!
+}
+
+input CreateChatMessageInput {
+  blob: Upload
+  blobs: [Upload!]
+  content: String
+  params: JSON
+  sessionId: String!
+}
+
+input CreateChatSessionInput {
+  """mark the session create from which doc"""
+  docId: String
+  pinned: Boolean
+
+  """The prompt name to use for the session"""
+  promptName: String!
+
+  """true by default, compliant for old version"""
+  reuseLatestChat: Boolean
+}
+
+input CreateCopilotPromptInput {
+  action: String
+  config: CopilotPromptConfigInput
+  messages: [CopilotPromptMessageInput!]!
+  model: String!
+  name: String!
+}
+
+input CreateUserInput {
+  email: String!
+  name: String
+  password: String
+}
+
+type CredentialsRequirementType {
+  password: PasswordLimitsType!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type DeleteAccount {
+  success: Boolean!
+}
+
+union ErrorDataUnion = BlobNotFoundDataType | CopilotContextFileNotSupportedDataType | CopilotDocNotFoundDataType | CopilotFailedToAddUserArtifactDataType | CopilotFailedToGenerateEmbeddingDataType | CopilotFailedToMatchContextDataType | CopilotFailedToMatchGlobalContextDataType | CopilotFailedToModifyContextDataType | CopilotInvalidContextDataType | CopilotMessageNotFoundDataType | CopilotPromptNotFoundDataType | CopilotProviderNotSupportedDataType | CopilotProviderSideErrorDataType | GraphqlBadRequestDataType | HttpRequestErrorDataType | InvalidAppConfigDataType | InvalidAppConfigInputDataType | InvalidEmailDataType | InvalidOauthCallbackCodeDataType | InvalidOauthResponseDataType | InvalidPasswordLengthDataType | InvalidRuntimeConfigTypeDataType | MissingOauthQueryParameterDataType | NoCopilotProviderAvailableDataType | QueryTooLongDataType | RuntimeConfigNotFoundDataType | UnknownOauthProviderDataType | UnsupportedClientVersionDataType | ValidationErrorDataType | WrongSignInCredentialsDataType
+
+enum ErrorNames {
+  ACCESS_DENIED
+  ACTION_FORBIDDEN
+  AUTHENTICATION_REQUIRED
+  BAD_REQUEST
+  BLOB_NOT_FOUND
+  BLOB_QUOTA_EXCEEDED
+  CANNOT_DELETE_ALL_ADMIN_ACCOUNT
+  CANNOT_DELETE_OWN_ACCOUNT
+  CAPTCHA_VERIFICATION_FAILED
+  COPILOT_ACTION_TAKEN
+  COPILOT_CONTEXT_FILE_NOT_SUPPORTED
+  COPILOT_DOCS_NOT_FOUND
+  COPILOT_DOC_NOT_FOUND
+  COPILOT_EMBEDDING_UNAVAILABLE
+  COPILOT_FAILED_TO_ADD_USER_ARTIFACT
+  COPILOT_FAILED_TO_CREATE_MESSAGE
+  COPILOT_FAILED_TO_GENERATE_EMBEDDING
+  COPILOT_FAILED_TO_GENERATE_TEXT
+  COPILOT_FAILED_TO_MATCH_CONTEXT
+  COPILOT_FAILED_TO_MATCH_GLOBAL_CONTEXT
+  COPILOT_FAILED_TO_MODIFY_CONTEXT
+  COPILOT_INVALID_CONTEXT
+  COPILOT_MESSAGE_NOT_FOUND
+  COPILOT_PROMPT_INVALID
+  COPILOT_PROMPT_NOT_FOUND
+  COPILOT_PROVIDER_NOT_SUPPORTED
+  COPILOT_PROVIDER_SIDE_ERROR
+  COPILOT_QUOTA_EXCEEDED
+  COPILOT_SESSION_DELETED
+  COPILOT_SESSION_INVALID_INPUT
+  COPILOT_SESSION_NOT_FOUND
+  COPILOT_TRANSCRIPTION_AUDIO_NOT_PROVIDED
+  COPILOT_TRANSCRIPTION_JOB_EXISTS
+  COPILOT_TRANSCRIPTION_JOB_NOT_FOUND
+  EARLY_ACCESS_REQUIRED
+  EMAIL_ALREADY_USED
+  EMAIL_SERVICE_NOT_CONFIGURED
+  EMAIL_TOKEN_NOT_FOUND
+  EMAIL_VERIFICATION_REQUIRED
+  GRAPHQL_BAD_REQUEST
+  HTTP_REQUEST_ERROR
+  INTERNAL_SERVER_ERROR
+  INVALID_APP_CONFIG
+  INVALID_APP_CONFIG_INPUT
+  INVALID_AUTH_STATE
+  INVALID_EMAIL
+  INVALID_EMAIL_TOKEN
+  INVALID_OAUTH_CALLBACK_CODE
+  INVALID_OAUTH_CALLBACK_STATE
+  INVALID_OAUTH_RESPONSE
+  INVALID_PASSWORD_LENGTH
+  INVALID_RUNTIME_CONFIG_TYPE
+  LINK_EXPIRED
+  MAILER_SERVICE_IS_NOT_CONFIGURED
+  MISSING_OAUTH_QUERY_PARAMETER
+  NETWORK_ERROR
+  NOT_FOUND
+  NO_COPILOT_PROVIDER_AVAILABLE
+  OAUTH_ACCOUNT_ALREADY_CONNECTED
+  OAUTH_STATE_EXPIRED
+  PASSWORD_REQUIRED
+  QUERY_TOO_LONG
+  RUNTIME_CONFIG_NOT_FOUND
+  SAME_EMAIL_PROVIDED
+  SIGN_UP_FORBIDDEN
+  STORAGE_QUOTA_EXCEEDED
+  TOO_MANY_REQUEST
+  UNKNOWN_OAUTH_PROVIDER
+  UNSPLASH_IS_NOT_CONFIGURED
+  UNSUPPORTED_CLIENT_VERSION
+  USER_AVATAR_NOT_FOUND
+  USER_NOT_FOUND
+  VALIDATION_ERROR
+  WRONG_SIGN_IN_CREDENTIALS
+  WRONG_SIGN_IN_METHOD
+}
+
+enum FeatureType {
+  Administrator
+  EarlyAccess
+  FreePlan
+  ProPlan
+  UnlimitedCopilot
+}
+
+type GraphqlBadRequestDataType {
+  code: String!
+  message: String!
+}
+
+type HttpRequestErrorDataType {
+  message: String!
+}
+
+input ImportUsersInput {
+  users: [CreateUserInput!]!
+}
+
+type InvalidAppConfigDataType {
+  hint: String!
+  key: String!
+  module: String!
+}
+
+type InvalidAppConfigInputDataType {
+  message: String!
+}
+
+type InvalidEmailDataType {
+  email: String!
+}
+
+type InvalidOauthCallbackCodeDataType {
+  body: String!
+  status: Int!
+}
+
+type InvalidOauthResponseDataType {
+  reason: String!
+}
+
+type InvalidPasswordLengthDataType {
+  max: Int!
+  min: Int!
+}
+
+type InvalidRuntimeConfigTypeDataType {
+  get: String!
+  key: String!
+  want: String!
+}
+
+"""
+The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSON @specifiedBy(url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf")
+
+"""
+The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSONObject @specifiedBy(url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf")
+
+type LimitedUserType {
+  """User email"""
+  email: String!
+
+  """User password has been set"""
+  hasPassword: Boolean
+}
+
+input ListUserInput {
+  first: Int = 20
+  skip: Int = 0
+}
+
+input ManageUserInput {
+  """User email"""
+  email: String
+
+  """User name"""
+  name: String
+}
+
+type MissingOauthQueryParameterDataType {
+  name: String!
+}
+
+type Mutation {
+  """add a chat to context"""
+  addContextChat(contextId: String!, sessionId: String!): CopilotContextChatOrDoc!
+
+  """add a chat to context"""
+  addContextDoc(contextId: String!, docId: String!): CopilotContextChatOrDoc!
+
+  """add a file to context"""
+  addContextFile(blobId: String, content: Upload, contextId: String!): CopilotContextFile!
+
+  """Add user embedding doc"""
+  addUserDocs(content: String!, metadata: String, sessionId: String!, title: String!): CopilotUserDoc!
+
+  """Ban an user"""
+  banUser(id: String!): UserType!
+  changeEmail(email: String!, token: String!): UserType!
+  changePassword(newPassword: String!, token: String!, userId: String): Boolean!
+  claimAudioTranscription(jobId: String!): TranscriptionResultType
+
+  """Create change password url"""
+  createChangePasswordUrl(callbackUrl: String!, userId: String!): String!
+
+  """Create a context session"""
+  createCopilotContext(sessionId: String!): String!
+
+  """Create a chat message"""
+  createCopilotMessage(options: CreateChatMessageInput!): String!
+
+  """Create a copilot prompt"""
+  createCopilotPrompt(input: CreateCopilotPromptInput!): CopilotPromptType!
+
+  """Create a chat session"""
+  createCopilotSession(options: CreateChatSessionInput!): String!
+
+  """Create a new user"""
+  createUser(input: CreateUserInput!): UserType!
+  deleteAccount: DeleteAccount!
+
+  """Delete a user account"""
+  deleteUser(id: String!): DeleteAccount!
+
+  """Reenable an banned user"""
+  enableUser(id: String!): UserType!
+
+  """import users"""
+  importUsers(input: ImportUsersInput!): [UserImportResultType!]!
+
+  """Remove user avatar"""
+  removeAvatar: RemoveAvatar!
+
+  """Cleanup sessions"""
+  removeCopilotSession(options: RemoveSessionInput!): [String!]!
+
+  """Remove user embedding doc"""
+  removeUserDocs(docId: String!): Boolean!
+
+  """Remove user embedding files"""
+  removeUserFiles(fileId: String!): Boolean!
+  retryAudioTranscription(jobId: String!): TranscriptionResultType
+  sendChangeEmail(callbackUrl: String!): Boolean!
+  sendChangePasswordEmail(callbackUrl: String!): Boolean!
+  sendSetPasswordEmail(callbackUrl: String!): Boolean!
+  sendTestEmail(config: JSONObject!): Boolean!
+  sendVerifyChangeEmail(callbackUrl: String!, email: String!, token: String!): Boolean!
+  sendVerifyEmail(callbackUrl: String!): Boolean!
+  submitAudioTranscription(blob: Upload, blobId: String!, blobs: [Upload!]): TranscriptionResultType
+
+  """Submit email to wishlist"""
+  submitWishlist(email: String!): Boolean!
+
+  """Trigger generate missing titles cron job"""
+  triggerGenerateTitleCron: Boolean!
+
+  """update app configuration"""
+  updateAppConfig(updates: [UpdateAppConfigInput!]!): JSONObject!
+
+  """Update a copilot prompt"""
+  updateCopilotPrompt(messages: [CopilotPromptMessageInput!]!, name: String!): CopilotPromptType!
+
+  """Update a chat session"""
+  updateCopilotSession(options: UpdateChatSessionInput!): String!
+  updateProfile(input: UpdateUserInput!): UserType!
+
+  """Update user settings"""
+  updateSettings(input: UpdateUserSettingsInput!): Boolean!
+
+  """Update an user"""
+  updateUser(id: String!, input: ManageUserInput!): UserType!
+
+  """Update user embedding doc"""
+  updateUserDocs(content: String, docId: String!, metadata: String, title: String): CopilotUserDoc!
+
+  """update user enabled feature"""
+  updateUserFeatures(features: [FeatureType!]!, id: String!): [FeatureType!]!
+
+  """Update user embedding files"""
+  updateUserFiles(fileId: String!, metadata: String!): CopilotUserFile!
+
+  """Upload user avatar"""
+  uploadAvatar(avatar: Upload!): UserType!
+
+  """validate app configuration"""
+  validateAppConfig(updates: [UpdateAppConfigInput!]!): [AppConfigValidateResult!]!
+  verifyEmail(token: String!): Boolean!
+}
+
+type NoCopilotProviderAvailableDataType {
+  modelId: String!
+}
+
+enum OAuthProviderType {
+  Apple
+  GitHub
+  Google
+  OIDC
+}
+
+type PageInfo {
+  endCursor: String
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+}
+
+type PaginatedCopilotHistoriesType {
+  edges: [CopilotHistoriesTypeEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type PaginatedCopilotUserDoc {
+  edges: [CopilotUserDocTypeEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+type PaginatedCopilotUserFile {
+  edges: [CopilotUserFileTypeEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+input PaginationInput {
+  """returns the elements in the list that come after the specified cursor."""
+  after: String
+
+  """returns the first n elements from the list."""
+  first: Int = 10
+
+  """ignore the first n elements from the list."""
+  offset: Int = 0
+}
+
+type PasswordLimitsType {
+  maxLength: Int!
+  minLength: Int!
+}
+
+type PublicUserType {
+  avatarUrl: String
+  id: String!
+  name: String!
+}
+
+type Query {
+  """get the whole app configuration"""
+  appConfig: JSONObject!
+
+  """Get current user"""
+  currentUser: UserType
+  error(name: ErrorNames!): ErrorDataUnion!
+
+  """List all copilot prompts"""
+  listCopilotPrompts: [CopilotPromptType!]!
+
+  """Get public user by id"""
+  publicUserById(id: String!): PublicUserType
+
+  """server config"""
+  serverConfig: ServerConfigType!
+
+  """Get user by email"""
+  user(email: String!): UserOrLimitedUser
+
+  """Get user by email for admin"""
+  userByEmail(email: String!): UserType
+
+  """Get user by id"""
+  userById(id: String!): UserType!
+
+  """List registered users"""
+  users(filter: ListUserInput!): [UserType!]!
+
+  """Get users count"""
+  usersCount: Int!
+}
+
+input QueryChatHistoriesInput {
+  action: Boolean
+  limit: Int
+  messageOrder: ChatHistoryOrder
+  pinned: Boolean
+  sessionId: String
+  sessionOrder: ChatHistoryOrder
+  skip: Int
+  withMessages: Boolean
+  withPrompt: Boolean
+}
+
+type QueryTooLongDataType {
+  max: Int!
+}
+
+type RemoveAvatar {
+  success: Boolean!
+}
+
+input RemoveSessionInput {
+  sessionId: String!
+}
+
+type RuntimeConfigNotFoundDataType {
+  key: String!
+}
+
+"""
+The `SafeInt` scalar type represents non-fractional signed whole numeric values that are considered safe as defined by the ECMAScript specification.
+"""
+scalar SafeInt @specifiedBy(url: "https://www.ecma-international.org/ecma-262/#sec-number.issafeinteger")
+
+type ServerConfigType {
+  """Features for user that can be configured"""
+  availableUserFeatures: [FeatureType!]!
+
+  """server base url"""
+  baseUrl: String!
+
+  """credentials requirement"""
+  credentialsRequirement: CredentialsRequirementType!
+
+  """enabled server features"""
+  features: [ServerFeature!]!
+
+  """whether server has been initialized"""
+  initialized: Boolean!
+
+  """server identical name could be shown as badge on user interface"""
+  name: String!
+  oauthProviders: [OAuthProviderType!]!
+
+  """server type"""
+  type: ServerDeploymentType!
+
+  """server version"""
+  version: String!
+}
+
+enum ServerDeploymentType {
+  AgentServer
+}
+
+enum ServerFeature {
+  Captcha
+  Copilot
+  OAuth
+}
+
+type StreamObject {
+  args: JSON
+  result: JSON
+  textDelta: String
+  toolCallId: String
+  toolName: String
+  type: String!
+}
+
+type TranscriptionItemType {
+  end: String!
+  speaker: String!
+  start: String!
+  transcription: String!
+}
+
+type TranscriptionResultType {
+  actions: String
+  id: ID!
+  status: AiJobStatus!
+  summary: String
+  title: String
+  transcription: [TranscriptionItemType!]
+}
+
+type UnknownOauthProviderDataType {
+  name: String!
+}
+
+type UnsupportedClientVersionDataType {
+  clientVersion: String!
+  requiredVersion: String!
+}
+
+input UpdateAppConfigInput {
+  key: String!
+  module: String!
+  value: JSON!
+}
+
+input UpdateChatSessionInput {
+  """Client custom metadata for the session"""
+  metadata: String
+
+  """Whether to pin the session"""
+  pinned: Boolean
+
+  """The prompt name to use for the session"""
+  promptName: String
+  sessionId: String!
+}
+
+input UpdateUserInput {
+  """User name"""
+  name: String
+}
+
+input UpdateUserSettingsInput {
+  """Receive comment email"""
+  receiveCommentEmail: Boolean
+
+  """Receive invitation email"""
+  receiveInvitationEmail: Boolean
+
+  """Receive mention email"""
+  receiveMentionEmail: Boolean
+}
+
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
+
+type UserImportFailedType {
+  email: String!
+  error: String!
+}
+
+union UserImportResultType = UserImportFailedType | UserType
+
+union UserOrLimitedUser = LimitedUserType | UserType
+
+type UserQuotaHumanReadableType {
+  blobLimit: String!
+  copilotLimit: String!
+  name: String!
+  storageQuota: String!
+  usedStorageQuota: String!
+}
+
+type UserQuotaType {
+  blobLimit: SafeInt!
+  copilotLimit: SafeInt
+  humanReadable: UserQuotaHumanReadableType!
+  name: String!
+  storageQuota: SafeInt!
+  usedStorageQuota: SafeInt!
+}
+
+type UserSettingsType {
+  """Receive comment email"""
+  receiveCommentEmail: Boolean!
+
+  """Receive invitation email"""
+  receiveInvitationEmail: Boolean!
+
+  """Receive mention email"""
+  receiveMentionEmail: Boolean!
+}
+
+type UserType {
+  """User avatar url"""
+  avatarUrl: String
+  copilot: Copilot!
+
+  """User is disabled"""
+  disabled: Boolean!
+
+  """User email"""
+  email: String!
+
+  """User email verified"""
+  emailVerified: Boolean!
+  embedding: CopilotUserConfig!
+
+  """Enabled features of a user"""
+  features: [FeatureType!]!
+
+  """User password has been set"""
+  hasPassword: Boolean
+  id: ID!
+
+  """User name"""
+  name: String!
+  quota: UserQuotaType!
+
+  """Get user settings"""
+  settings: UserSettingsType!
+}
+
+type ValidationErrorDataType {
+  errors: String!
+}
+
+type WrongSignInCredentialsDataType {
+  email: String!
+}

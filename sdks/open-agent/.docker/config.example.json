@@ -1,0 +1,82 @@
+{
+  "$schema": "./schema.json",
+  "oauth": {
+    "providers.github": {
+      "clientId": "",
+      "clientSecret": ""
+    },
+    "providers.google": {
+      "clientId": "",
+      "clientSecret": ""
+    }
+  },
+  "mailer": {
+    "enabled": false,
+    "SMTP": {
+      "host": "",
+      "ignoreTLS": false,
+      "password": "",
+      "port": 587,
+      "sender": "",
+      "username": ""
+    }
+  },
+  "copilot": {
+    "enabled": true,
+    "providers.fal": {
+      "apiKey": ""
+    },
+    "exa": {
+      "key": ""
+    },
+    "providers.gemini": {
+      "apiKey": ""
+    },
+    "providers.openai": {
+      "apiKey": ""
+    },
+    "providers.perplexity": {
+      "apiKey": ""
+    },
+    "providers.anthropic": {
+      "apiKey": ""
+    },
+    "providers.morph": {
+      "apiKey": ""
+    },
+    "providers.geminiVertex": {
+      "project": "",
+      "location": "us-central1",
+      "googleAuthOptions": {
+        "credentials": {}
+      }
+    },
+    "providers.anthropicVertex": {
+      "project": "",
+      "location": "us-east5",
+      "googleAuthOptions": {
+        "credentials": {}
+      }
+    },
+    "storage": {
+      "bucket": "",
+      "config": {
+        "accountId": "",
+        "credentials": {
+          "accessKeyId": "",
+          "secretAccessKey": ""
+        }
+      },
+      "provider": "cloudflare-r2"
+    },
+    "browserUse": {
+      "key": ""
+    },
+    "e2b": {
+      "key": ""
+    },
+    "unsplash": {
+      "key": ""
+    }
+  }
+}

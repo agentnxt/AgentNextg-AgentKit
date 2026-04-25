@@ -1,0 +1,9 @@
+query removeContextDoc($contextId: String!, $docId: String!) {
+  currentUser {
+    copilot {
+      contexts(contextId: $contextId) {
+        removeContextDoc(docId: $docId)
+      }
+    }
+  }
+}

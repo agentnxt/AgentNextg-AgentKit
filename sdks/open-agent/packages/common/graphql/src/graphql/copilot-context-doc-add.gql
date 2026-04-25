@@ -1,0 +1,9 @@
+mutation addContextDoc($contextId: String!, $docId: String!) {
+  addContextDoc(contextId: $contextId, docId: $docId) {
+    id
+    createdAt
+    chunkSize
+    error
+    status
+  }
+}
